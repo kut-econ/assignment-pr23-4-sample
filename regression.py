@@ -32,6 +32,16 @@ X = [float(line.split(' ')[1]) for line in lines[1:]]
 # い(計算誤差により、各数値はoutput_sample.txtの数値
 # からごくわずかにずれる可能性があります)。
 
+# Numpy配列への変換
+X = np.array(X)
+Y = np.array(Y)
+# 回帰分析
+res = stats.linregress(X,Y)
+# 画面への出力
+print("Slope = ",res.slope.round(5))
+print("P-Value = ",res.pvalue)
+print("Intercept = ",res.intercept.round(5))
+print("R-Value = ",res.rvalue.round(5))
 # %%
 # 課題4-2のプログラム
 #
@@ -51,4 +61,13 @@ X = [float(line.split(' ')[1]) for line in lines[1:]]
 # を小数点第5位で丸め、prediction.txtに出力して終わり
 # です。with構文を使って出力してください。
 
-# %%
+# 予測値
+Y_pred = (res.intercept + res.slope * X).round(5)
+# 残差
+residual = (Y - Y_pred).round(5)
+
+# ファイル出力
+with open('prediction.txt','w') as file:
+    file.write('X値 Y値 Y予測値 残差\n')
+    for i in range(len(X)):
+        file.write(f'{X[i]} {Y[i]} {Y_pred[i]} {residual[i]}\n')
